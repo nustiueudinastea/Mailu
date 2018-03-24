@@ -55,9 +55,9 @@ default_config = {
     # Advanced settings
     'PASSWORD_SCHEME': 'SHA512-CRYPT',
     # Host settings
-    'HOST_IMAP': 'imap',
-    'HOST_POP3': 'imap',
-    'HOST_SMTP': 'smtp',
+    'HOST_IMAP': os.environ.get('HOST_IMAP', 'imap'),
+    'HOST_POP3': os.environ.get('HOST_POP3', 'imap'),
+    'HOST_SMTP': os.environ.get('HOST_SMTP', 'smtp'),
     'HOST_AUTHSMTP': os.environ.get('HOST_SMTP', 'smtp'),
 }
 
