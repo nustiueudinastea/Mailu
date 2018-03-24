@@ -75,7 +75,7 @@ def get_status(protocol, status):
     return status, codes[protocol]
 
 def extract_host_port(host_and_port, default_port):
-    host, _, port = re.match('^([a-zA-Z-.]+)(:([0-9]+))?$', host_and_port).groups()
+    host, _, port = re.match('^([a-zA-Z0-9-.]+)(:([0-9]+))?$', host_and_port).groups()
     return host, int(port) if port else default_port
 
 def get_server(protocol, authenticated=False):
