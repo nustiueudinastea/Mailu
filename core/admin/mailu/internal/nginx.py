@@ -1,4 +1,4 @@
-from mailu import db, models, app
+from mailu import db, models, app, protos_client, protos_domain
 
 import re
 import socket
@@ -37,6 +37,7 @@ def handle_authentication(headers):
         user_email = urllib.parse.unquote(headers["Auth-User"])
         password = urllib.parse.unquote(headers["Auth-Pass"])
         ip = urllib.parse.unquote(headers["Client-Ip"])
+        username, domain = user_email.split('@')
         user = models.User.query.get(user_email)
         status = False
         if user:
@@ -44,7 +45,9 @@ def handle_authentication(headers):
                 if (token.check_password(password) and
                     (not token.ip or token.ip == ip)):
                         status = True
-            if user.check_password(password):
+            if app.config['PROTOS_URL'] and domain == protos_domain and protos_client.authenticate_user(username, password):
+                status = True
+            elif user.check_password(password):
                 status = True
             if status:
                 if protocol == "imap" and not user.enable_imap:

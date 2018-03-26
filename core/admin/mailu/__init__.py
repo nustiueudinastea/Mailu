@@ -55,10 +55,12 @@ default_config = {
     # Advanced settings
     'PASSWORD_SCHEME': 'SHA512-CRYPT',
     # Host settings
-    'HOST_IMAP': os.environ.get('HOST_IMAP', 'imap'),
-    'HOST_POP3': os.environ.get('HOST_POP3', 'imap'),
-    'HOST_SMTP': os.environ.get('HOST_SMTP', 'smtp'),
-    'HOST_AUTHSMTP': os.environ.get('HOST_SMTP', 'smtp'),
+    'HOST_IMAP': 'imap',
+    'HOST_POP3': 'imap',
+    'HOST_SMTP': 'smtp',
+    'HOST_AUTHSMTP': 'smtp',
+    # Protos settings
+    'PROTOS_URL': False,
 }
 
 # Load configuration from the environment if available
@@ -83,6 +85,13 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 # Babel configuration
 babel = flask_babel.Babel(app)
 translations = list(map(str, babel.list_translations()))
+
+# Protos imports
+if app.config['PROTOS_URL']:
+    from protoslib import protos, util
+    protos_app_id = util.get_app_id()
+    protos_client = protos.Protos(protos_app_id, app.config['PROTOS_URL'])
+    protos_domain = protos_client.get_domain()
 
 @babel.localeselector
 def get_locale():

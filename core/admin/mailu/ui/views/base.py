@@ -1,4 +1,4 @@
-from mailu import dockercli, app, db, models
+from mailu import dockercli, app, db, models, protos_client, protos_domain
 from mailu.ui import ui, forms, access
 
 import flask
@@ -17,7 +17,17 @@ def index():
 def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
-        user = models.User.login(form.email.data, form.pw.data)
+        user = None
+        if app.config['PROTOS_URL']:
+            username, domain = form.email.data.split('@')
+            if domain != protos_domain:
+                flask.flash('Wrong e-mail or password', 'error')
+            if protos_client.authenticate_user(username, form.pw.data):
+                user = models.User.query.get(form.email.data)
+                if not user:
+                    user = create_user(username, domain)
+        else:
+            user = models.User.login(form.email.data, form.pw.data)
         if user:
             flask_login.login_user(user)
             endpoint = flask.request.args.get('next', '.index')
@@ -27,6 +37,20 @@ def login():
             flask.flash('Wrong e-mail or password', 'error')
     return flask.render_template('login.html', form=form)
 
+def create_user(username, domain_name):
+    domain = models.Domain.query.get(domain_name)
+    if not domain:
+        domain = models.Domain(name=domain_name)
+        db.session.add(domain)
+    user = models.User(
+        localpart=username,
+        domain=domain,
+        global_admin=False
+    )
+    user.set_password('randompassword', hash_scheme=app.config['PASSWORD_SCHEME'])
+    db.session.add(user)
+    db.session.commit()
+    return user
 
 @ui.route('/logout', methods=['GET'])
 @access.authenticated
