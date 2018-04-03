@@ -9,6 +9,11 @@
 {% endblock %}
 
 {% block main_action %}
+{% if domain.dkim_publickey and config["PROTOS_URL"] %}
+<a class="btn btn-primary" href="{{ url_for(".domain_create_protos_records", domain_name=domain.name) }}">
+  {% trans %}Create Protos records{% endtrans %}
+</a>
+{% endif %}
 {% if current_user.global_admin %}
 <a class="btn btn-primary" href="{{ url_for(".domain_genkeys", domain_name=domain.name) }}">
   {% if domain.dkim_publickey %}

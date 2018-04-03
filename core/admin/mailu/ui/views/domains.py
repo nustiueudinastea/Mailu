@@ -1,4 +1,4 @@
-from mailu import app, db, models
+from mailu import app, db, models, protosutil
 from mailu.ui import ui, forms, access
 
 import flask
@@ -71,5 +71,17 @@ def domain_details(domain_name):
 def domain_genkeys(domain_name):
     domain = models.Domain.query.get(domain_name) or flask.abort(404)
     domain.generate_dkim_key()
+    return flask.redirect(
+        flask.url_for(".domain_details", domain_name=domain_name))
+
+@ui.route('/domain/protosrecords/<domain_name>', methods=['GET', 'POST'])
+@access.domain_admin(models.Domain, 'domain_name')
+@access.confirmation_required("create Protos records for {domain_name}")
+def domain_create_protos_records(domain_name):
+    domain = models.Domain.query.get(domain_name) or flask.abort(404)
+    if app.config['PROTOS_URL']:
+        protosutil.create_spf_record()
+        protosutil.create_dkim_record(domain.dkim_publickey)
+        protosutil.create_dmarc_record()
     return flask.redirect(
         flask.url_for(".domain_details", domain_name=domain_name))
