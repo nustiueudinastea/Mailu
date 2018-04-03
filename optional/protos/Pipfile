@@ -8,6 +8,8 @@ requests = '*'
 circus = '*'
 tornado = '<5.0,>=3.0'
 protoslib = { git = 'https://github.com/nustiueudinastea/protoslib-py.git@master', editable = true }
+M2Crypto = '*'
+cryptography = '*'
 
 [requires]
 python_version = "3.6"
