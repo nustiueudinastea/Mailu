@@ -1,4 +1,4 @@
-from mailu import dockercli, app, db, models, protos_client, protos_domain
+from mailu import dockercli, circusutil, app, db, models, protos_client, protos_domain
 from mailu.ui import ui, forms, access
 
 import flask
@@ -65,10 +65,13 @@ def logout():
 @access.global_admin
 def services():
     try:
-        containers = dockercli.get()
+        if app.config['PROTOS_URL']:
+            services = circusutil.get_services()
+        else:
+            services = dockercli.get()
     except Exception as error:
         return flask.render_template('docker-error.html', error=error)
-    return flask.render_template('services.html', containers=containers)
+    return flask.render_template('services.html', services=services)
 
 
 @ui.route('/announcement', methods=['GET', 'POST'])

@@ -5,6 +5,22 @@
 {% endblock %}
 
 {% block content %}
+{% if config["PROTOS_URL"] %}
+{% call macros.table() %}
+<tr>
+  <th>{% trans %}Service{% endtrans %}</th>
+  <th>{% trans %}Status{% endtrans %}</th>
+  <th>{% trans %}PID{% endtrans %}</th>
+</tr>
+{% for name, service in services.items() %}
+<tr>
+  <td>{{ name }}</td>
+  <td><span class="label label-{{ "success" if service['status'] == 'ok' else "danger" }}">{{ service['status'] }}</span></td>
+  <td>{{ service['pid'] }}</td>
+</tr>
+{% endfor %}
+{% endcall %}
+{% else %}
 {% call macros.table() %}
 <tr>
   <th>{% trans %}Service{% endtrans %}</th>
@@ -14,15 +30,16 @@
   <th>{% trans %}Started{% endtrans %}</th>
   <th>{% trans %}Last update{% endtrans %}</th>
 </tr>
-{% for name, container in containers.items() %}
+{% for name, service in services.items() %}
 <tr>
   <td>{{ name }}</td>
-  <td><span class="label label-{{ "success" if container['State']['Running'] else "danger" }}">{{ container['State']['Status'] }}</span></td>
-  <td>{{ container['State']['Pid'] }}</td>
-  <td>{{ container['Config']['Image'] }}</td>
-  <td>{{ container['State']['StartedAt'] }}</td>
-  <td>{{ container['Image']['Created'] }}
+  <td><span class="label label-{{ "success" if service['State']['Running'] else "danger" }}">{{ service['State']['Status'] }}</span></td>
+  <td>{{ service['State']['Pid'] }}</td>
+  <td>{{ service['Config']['Image'] }}</td>
+  <td>{{ service['State']['StartedAt'] }}</td>
+  <td>{{ service['Image']['Created'] }}
 </tr>
 {% endfor %}
 {% endcall %}
+{% endif %}
 {% endblock %}
