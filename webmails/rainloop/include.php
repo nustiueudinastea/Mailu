@@ -7,7 +7,7 @@
  */
 function __get_custom_data_full_path()
 {
-	return '/data/'; // custom data folder path
+	return '/data/rainloop/'; // custom data folder path
 }
 
 /**
