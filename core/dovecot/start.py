@@ -8,11 +8,15 @@ import glob
 convert = lambda src, dst: open(dst, "w").write(jinja2.Template(open(src).read()).render(**os.environ))
 
 # Actual startup script
-os.environ["FRONT_ADDRESS"] = socket.gethostbyname("front")
+if not os.environ.has_key("FRONT_ADDRESS"):
+    os.environ["FRONT_ADDRESS"] = socket.gethostbyname("front")
 if os.environ["WEBMAIL"] != "none":
-	os.environ["WEBMAIL_ADDRESS"] = socket.gethostbyname("webmail")
+    if os.environ.has_key("HOST_WEBMAIL"):
+        os.environ["WEBMAIL_ADDRESS"] = os.environ["HOST_WEBMAIL"]
+    else:
+        os.environ["WEBMAIL_ADDRESS"] = socket.gethostbyname("webmail")
 
-for dovecot_file in glob.glob("/conf/*"):
+for dovecot_file in glob.glob("/mailu/dovecot/conf/*"):
     convert(dovecot_file, os.path.join("/etc/dovecot", os.path.basename(dovecot_file)))
 
 # Run postfix
