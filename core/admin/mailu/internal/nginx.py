@@ -1,4 +1,4 @@
-from mailu import db, models, app, protos_client, protos_domain
+from mailu import db, models, app
 
 import re
 import socket
@@ -45,7 +45,7 @@ def handle_authentication(headers):
                 if (token.check_password(password) and
                     (not token.ip or token.ip == ip)):
                         status = True
-            if app.config['PROTOS_URL'] and domain == protos_domain and protos_client.authenticate_user(username, password):
+            if app.config['PROTOS_URL'] and domain == app.protos_domain and app.protos_client.authenticate_user(username, password):
                 status = True
             elif user.check_password(password):
                 status = True

@@ -1,4 +1,4 @@
-from mailu import dockercli, circusutil, app, db, models, protos_client, protos_domain
+from mailu import dockercli, circusutil, app, db, models
 from mailu.ui import ui, forms, access
 
 import flask
@@ -20,9 +20,9 @@ def login():
         user = None
         if app.config['PROTOS_URL']:
             username, domain = form.email.data.split('@')
-            if domain != protos_domain:
+            if domain != app.protos_domain:
                 flask.flash('Wrong e-mail or password', 'error')
-            user_protos = protos_client.authenticate_user(username, form.pw.data)
+            user_protos = app.protos_client.authenticate_user(username, form.pw.data)
             if user_protos:
                 user = models.User.query.get(form.email.data)
                 if not user:
