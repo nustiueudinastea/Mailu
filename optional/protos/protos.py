@@ -44,14 +44,14 @@ ENV_VARIABLES = {
 }
 
 def set_proc_vars():
-    rainloop_proc = {'name': 'rainloop', 'cmd': '/mailu/rainloop/start.sh', 'working_dir': '/var/www', 'numprocesses': 1}
-    rsyslog_proc = {'name': 'rsyslog', 'cmd': '/usr/sbin/rsyslogd -n', 'working_dir': '/', 'numprocesses': 1}
-    redis_proc = {'name': 'redis', 'cmd': '/usr/bin/redis-server', 'working_dir': '/', 'numprocesses': 1}
-    nginx_proc = {'name': 'nginx', 'cmd': '/mailu/nginx/start.py', 'working_dir': '/mailu/nginx', 'numprocesses': 1, 'env': ENV_VARIABLES}
-    mailu_proc = {'name': 'admin', 'cmd': '/mailu/admin/start.sh', 'working_dir': '/mailu/admin' ,'numprocesses': 1, 'env': ENV_VARIABLES}
-    dovecot_proc = {'name': 'dovecot', 'cmd': '/mailu/dovecot/start.py', 'working_dir': '/mailu/dovecot' ,'numprocesses': 1, 'env': ENV_VARIABLES}
-    postfix_proc = {'name': 'postfix', 'cmd': '/mailu/postfix/start.py', 'working_dir': '/mailu/postfix' ,'numprocesses': 1, 'env': ENV_VARIABLES}
-    rspamd_proc = {'name': 'rspamd', 'cmd': '/mailu/rspamd/start.py', 'working_dir': '/mailu/rspamd' ,'numprocesses': 1, 'env': ENV_VARIABLES}
+    rainloop_proc = {'name': 'rainloop', 'cmd': '/mailu/rainloop/start.sh', 'working_dir': '/var/www', 'numprocesses': 1, 'stdout_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'RAINLOOP (%Y-%m-%d %H:%M:%S)'}, 'stderr_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'RAINLOOP (%Y-%m-%d %H:%M:%S)'}}
+    rsyslog_proc = {'name': 'rsyslog', 'cmd': '/usr/sbin/rsyslogd -n', 'working_dir': '/', 'numprocesses': 1, 'stdout_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'RSYSLOG (%Y-%m-%d %H:%M:%S)'}, 'stderr_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'RSYSLOG (%Y-%m-%d %H:%M:%S)'}}
+    redis_proc = {'name': 'redis', 'cmd': '/usr/bin/redis-server', 'working_dir': '/', 'numprocesses': 1, 'stdout_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'REDIS (%Y-%m-%d %H:%M:%S)'}, 'stderr_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'REDIS (%Y-%m-%d %H:%M:%S)'}}
+    nginx_proc = {'name': 'nginx', 'cmd': '/mailu/nginx/start.py', 'working_dir': '/mailu/nginx', 'numprocesses': 1, 'env': ENV_VARIABLES, 'stdout_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'NGINX (%Y-%m-%d %H:%M:%S)'}, 'stderr_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'NGINX (%Y-%m-%d %H:%M:%S)'}}
+    mailu_proc = {'name': 'admin', 'cmd': '/mailu/admin/start.sh', 'working_dir': '/mailu/admin' ,'numprocesses': 1, 'env': ENV_VARIABLES, 'stdout_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'MAILU (%Y-%m-%d %H:%M:%S)'}, 'stderr_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'MAILU (%Y-%m-%d %H:%M:%S)'}}
+    dovecot_proc = {'name': 'dovecot', 'cmd': '/mailu/dovecot/start.py', 'working_dir': '/mailu/dovecot' ,'numprocesses': 1, 'env': ENV_VARIABLES, 'stdout_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'DOVECOT (%Y-%m-%d %H:%M:%S)'}, 'stderr_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'DOVECOT (%Y-%m-%d %H:%M:%S)'}}
+    postfix_proc = {'name': 'postfix', 'cmd': '/mailu/postfix/start.py', 'working_dir': '/mailu/postfix' ,'numprocesses': 1, 'env': ENV_VARIABLES, 'stdout_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'POSTFIX (%Y-%m-%d %H:%M:%S)'}, 'stderr_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'POSTFIX (%Y-%m-%d %H:%M:%S)'}}
+    rspamd_proc = {'name': 'rspamd', 'cmd': '/mailu/rspamd/start.py', 'working_dir': '/mailu/rspamd' ,'numprocesses': 1, 'env': ENV_VARIABLES, 'stdout_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'RSPAMD (%Y-%m-%d %H:%M:%S)'}, 'stderr_stream': {'class': 'circus.stream.FancyStdoutStream', 'time_format': 'RSPAMD (%Y-%m-%d %H:%M:%S)'}}
 
     all_processes = [rainloop_proc, rsyslog_proc, nginx_proc, redis_proc, mailu_proc, dovecot_proc, postfix_proc, rspamd_proc]
     return all_processes
