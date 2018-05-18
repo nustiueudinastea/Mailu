@@ -21,4 +21,4 @@ for dovecot_file in glob.glob("/mailu/dovecot/conf/*"):
 
 # Run postfix
 os.system("chown -R mail:mail /mail /var/lib/dovecot")
-os.execv("/usr/sbin/dovecot", ["dovecot", "-c", "/etc/dovecot/dovecot.conf", "-F"])
+os.execv("/usr/sbin/dovecot", ["/usr/sbin/dovecot", "-c", "/etc/dovecot/dovecot.conf", "-F"])

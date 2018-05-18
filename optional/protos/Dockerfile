@@ -1,4 +1,11 @@
 FROM alpine:edge
+LABEL protos="0.0.1" \
+      protos.installer.metadata.description="Mailu is a simple yet full-featured mail server" \
+      protos.installer.metadata.capabilities="ResourceProvider,ResourceConsumer,InternetAccess,GetInformation,PublicDNS,AuthUser" \
+      protos.installer.metadata.requires="dns" \
+      protos.installer.metadata.provides="mail" \
+      protos.installer.metadata.publicports="80/tcp,443/tcp,110/tcp,143/tcp,993/tcp,995/tcp,25/tcp,465/tcp,587/tcp" \
+      protos.installer.metadata.name="mailu"
 
 ENV LANG C.UTF-8
 ENV SHELL /bin/sh
@@ -128,6 +135,8 @@ COPY webmails/rainloop/start.sh /mailu/rainloop/start.sh
 ##
 RUN mkdir -p /mailu/protos /certs
 WORKDIR /mailu/protos
+ENV PIPENV_VENV_IN_PROJECT=true
+
 
 COPY optional/protos/* ./
 RUN pipenv install --three
@@ -137,3 +146,9 @@ RUN pipenv install --three
 ##
 # RUN apk del build-dep \
 #     && rm -rf /var/cache/apk/*
+
+
+##
+## Entry point into the container
+##
+CMD ["pipenv", "run", "python", "protos.py"]

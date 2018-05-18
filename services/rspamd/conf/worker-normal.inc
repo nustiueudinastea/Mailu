@@ -1,1 +1,3 @@
-enabled = false;
+worker "normal" {
+    enabled = false;
+}

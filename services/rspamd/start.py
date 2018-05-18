@@ -12,7 +12,7 @@ if not os.environ.has_key("FRONT_ADDRESS"):
     os.environ["FRONT_ADDRESS"] = socket.gethostbyname("front")
 
 for rspamd_file in glob.glob("/mailu/rspamd/conf/*"):
-    convert(rspamd_file, os.path.join("/etc/rspamd/local.d", os.path.basename(rspamd_file)))
+    convert(rspamd_file, os.path.join("/etc/rspamd", os.path.basename(rspamd_file)))
 
 # Run rspamd
 os.execv("/usr/sbin/rspamd", ["rspamd", "-i", "-f"])

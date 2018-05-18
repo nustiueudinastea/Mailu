@@ -3,9 +3,12 @@ import base64
 import os.path
 import subprocess
 
-from protoslib import protos, exceptions
+from protoslib import protos, exceptions, util
 from circus import get_arbiter
 from time import sleep
+
+# PROTOS_URL = 'http://172.17.0.5:9999/'
+PROTOS_URL = 'http://protos:8080/'
 
 ENV_VARIABLES = {
     'WEBMAIL': 'rainloop',
@@ -28,18 +31,17 @@ ENV_VARIABLES = {
     'HOST_REDIS': '127.0.0.1',
     'RATELIMIT_STORAGE_URL': 'redis://127.0.0.1',
     'HOST_ADMIN': '127.0.0.1:8080',
-    'HOST_SMTP': 'smtp:11025',
-    'HOST_AUTHSMTP': 'smtp:11026',
-    'HOST_IMAP': 'imap:11143',
-    'HOST_POP3': 'imap:11110',
+    'HOST_SMTP': '127.0.0.1:11025',
+    'HOST_AUTHSMTP': '127.0.0.1:11026',
+    'HOST_IMAP': '127.0.0.1:11143',
+    'HOST_POP3': '127.0.0.1:11110',
     'HOST_WEBMAIL': '127.0.0.1',
     'HOST_ANTISPAM': '127.0.0.1:11334',
     'FRONT_ADDRESS': '127.0.0.1',
+
+    'PROTOS_URL': PROTOS_URL,
+    'APPID': util.get_app_id(),
 }
-
-PROTOS_URL = 'http://172.17.0.3:9999/'
-PROTOS_APP_ID = 'bb1pq5rj02j1hjk38j0g'
-
 
 def set_proc_vars():
     rainloop_proc = {'name': 'rainloop', 'cmd': '/mailu/rainloop/start.sh', 'working_dir': '/var/www', 'numprocesses': 1}
@@ -51,8 +53,7 @@ def set_proc_vars():
     postfix_proc = {'name': 'postfix', 'cmd': '/mailu/postfix/start.py', 'working_dir': '/mailu/postfix' ,'numprocesses': 1, 'env': ENV_VARIABLES}
     rspamd_proc = {'name': 'rspamd', 'cmd': '/mailu/rspamd/start.py', 'working_dir': '/mailu/rspamd' ,'numprocesses': 1, 'env': ENV_VARIABLES}
 
-    # all_processes = [rainloop_proc, rsyslog_proc, nginx_proc, redis_proc, mailu_proc, dovecot_proc, postfix_proc, rspamd_proc]
-    all_processes = [rsyslog_proc, nginx_proc, redis_proc, mailu_proc, postfix_proc, dovecot_proc, rainloop_proc]
+    all_processes = [rainloop_proc, rsyslog_proc, nginx_proc, redis_proc, mailu_proc, dovecot_proc, postfix_proc, rspamd_proc]
     return all_processes
 
 def do_circus(event_loop=None):
@@ -75,7 +76,7 @@ def create_certificates(cert, issuercert, privatekey):
         subprocess.call(['openssl', 'dhparam', '-dsaparam', '-out', '/certs/dhparam.pem', '4096'])
 
 def do_protos():
-    client = protos.Protos(PROTOS_APP_ID, PROTOS_URL)
+    client = protos.Protos(util.get_app_id(), PROTOS_URL)
     domain = client.get_domain()
     app_info = client.get_app_info()
     print(domain)

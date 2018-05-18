@@ -90,8 +90,8 @@ translations = list(map(str, babel.list_translations()))
 if app.config['PROTOS_URL']:
     from protoslib import protos, util
     protos_app_id = util.get_app_id()
-    protos_client = protos.Protos(protos_app_id, app.config['PROTOS_URL'])
-    protos_domain = protos_client.get_domain()
+    app.protos_client = protos.Protos(protos_app_id, app.config['PROTOS_URL'])
+    app.protos_domain = app.protos_client.get_domain()
 
 @babel.localeselector
 def get_locale():
