@@ -91,6 +91,4 @@ def get_server(protocol, authenticated=False):
             hostname, port = extract_host_port(app.config['HOST_AUTHSMTP'], 10025)
         else:
             hostname, port = extract_host_port(app.config['HOST_SMTP'], 25)
-    print(hostname)
-    # address = socket.gethostbyname(hostname)
     return hostname, port
