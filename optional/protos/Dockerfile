@@ -149,6 +149,12 @@ RUN pipenv install --three
 
 
 ##
+## Persistence volume
+##
+
+VOLUME ["/data"]
+
+##
 ## Entry point into the container
 ##
 CMD ["pipenv", "run", "python", "protos.py"]
