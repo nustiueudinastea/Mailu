@@ -104,6 +104,7 @@ RUN mkdir -p /mailu/rspamd /run/rspamd
 WORKDIR /mailu/rspamd
 
 COPY services/rspamd/conf ./conf
+COPY services/rspamd/local_conf ./local_conf
 COPY services/rspamd/start.py ./start.py
 
 ##
